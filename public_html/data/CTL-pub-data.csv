@@ -1,4 +1,4 @@
-Conversation ID,Time of Conversation Start,Area Code,State,Main Issue,abuse,anxiety,bereavement,bully,depressed,eating,family,friend,isolated,lgbtq,medical,relationship,school,self_harm,sexual_abuse,stress,substance,suicidal_ideation,3rd_party,other
+Conversation_ID,Time_of_Conversation_Start,Area_Code,State,Main Issue,abuse,anxiety,bereavement,bully,depressed,eating,family,friend,isolated,lgbtq,medical,relationship,school,self_harm,sexual_abuse,stress,substance,suicidal_ideation,3rd_party,other
 6388,11/18/2013 12:33:00,630,IL,suicidal_ideation,0,0,0,0,1,0,1,1,1,0,0,0,1,0,0,0,0,1,0,0
 6390,11/18/2013 13:07:00,319,IA,relationship,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0
 6391,11/18/2013 13:08:00,609,NJ,self_harm,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0
