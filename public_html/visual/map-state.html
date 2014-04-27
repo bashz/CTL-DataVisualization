@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CrisisTextLine</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="../css/ctl.css" type="text/css" />
+        <script type="text/javascript" src="../js/d3.min.js"></script>
+        <script type="text/javascript" src="../js/topojson.js"></script>
+        <script type="text/javascript" src="../js/queue.min.js"></script>
+    </head>
+    <body>
+        <form class="form-inline">
+          <fieldset>
+          <label>Choose Cases Type</label>
+          <select id="project">
+            <option value=""></option>
+            <option value="data/faker.json">fzaninotto / faker</option>
+            <option value="data/jquery.json">jquery / jquery</option>
+            <option value="data/twig.json">fabpot / twig</option>
+            <option value="data/lichess.json">ornicar / lila</option>
+            <option value="data/propel2.json">propelorm / Propel2</option>
+            <option value="data/doctrine2.json">doctrine / doctrine2</option>
+            <option value="data/wordpress.json">WordPress / WordPress</option>
+            <option value="data/rails.json">rails / rails</option>
+            <option value="data/symfony.json">symfony / symfony (WARNING: will make your computer scream)</option>
+            <option value="data/zf2.json">zendframework / zf2 (WARNING: will make your computer scream</option>
+          </select>
+          </fieldset>
+        </form>
+        <div id="map"></div>
+        <script type="text/javascript" src="../js/visual/map-state.js"></script>
+    </body>
+</html>
