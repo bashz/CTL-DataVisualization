@@ -1,5 +1,10 @@
 .visual{
-    
+    font-size: 24px;
+    text-align: center;
+    padding: 20px 0;
+}
+.visual small{
+    font-size: 14px;
 }
 #map{
     width: 960px;

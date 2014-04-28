@@ -40,7 +40,7 @@ function ready(error, us) {
         rateById.set(casesId[i], Math.sqrt(casesCount[i] / casesId.length));
     }
     svg.append("g")
-            .attr("class", "counties")
+            .attr("class", "countries")
             .selectAll("path")
             .data(topojson.feature(us, us.objects.counties).features)
             .enter().append("path")
