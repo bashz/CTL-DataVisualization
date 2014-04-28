@@ -12,7 +12,7 @@
         <form class="form-inline">
             <fieldset>
                 <label>Issue</label>
-                <select id="project">
+                <select id="issue">
                     <option value="">Overall</option>
                     <option value="abuse">abuse</option>
                     <option value="anxiety">anxiety</option>
@@ -40,5 +40,11 @@
         </form>
         <div id="map"></div>
         <script type="text/javascript" src="../js/visual/map-state.js"></script>
+        <script type="text/javascript">
+            document.getElementById('issue').addEventListener('change', function() {
+                reload(this.value);
+                ;
+            });
+        </script>
     </body>
 </html>
