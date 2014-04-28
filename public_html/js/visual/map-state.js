@@ -48,10 +48,18 @@ function ready(error, us) {
             .attr("class", function(d) {
         return quantize(rateById.get(d.properties.abbr));
     })
-            .attr("text", function(d) {
-        return d.properties.abbr;
-    })
             .attr("d", path);
+    svg.append("g")
+    .attr("class", "labels")
+            .selectAll("text")
+            .data(us.features)
+    .enter().append("text")
+    .attr("x", function(d) {
+        return path.centroid(d)[0];
+    })
+            .attr("y", function(d) {
+        return path.centroid(d)[1];
+    }).text(function(d) { return d.properties.abbr; });
 
 }
 
