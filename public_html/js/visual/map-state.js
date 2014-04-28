@@ -2,6 +2,7 @@ var width = 960,
         height = 600;
 
 var rateById = d3.map();
+var caseById = d3.map();
 
 var quantize = d3.scale.quantize()
         .domain([0, .15])
@@ -107,6 +108,7 @@ reload();
 function ready(error, us) {
     for (var i = 0; i < casesId.length; i++) {
         rateById.set(casesId[i], casesCount[i] / sum);
+        caseById.set(casesId[i], casesCount[i]);
     }
     var Country = Countries.attr("class", "countries")
             .selectAll("path")
@@ -117,6 +119,9 @@ function ready(error, us) {
     })
             .attr("rate", function(d) {
         return 100 * rateById.get(d.properties.abbr);
+    })
+            .attr("cases",function(d) {
+        return caseById.get(d.properties.abbr);
     })
             .attr("fill", function(d) {
         var rate = quantize(rateById.get(d.properties.abbr));
@@ -185,8 +190,12 @@ function ready(error, us) {
                 .attr("x", d3.mouse(this)[0])
                 .attr("y", d3.mouse(this)[1])
                 .attr("fill", "#400")
-                .text(d3.select(this).attr("name") + " : " + Math.round(10 * d3.select(this).attr("rate")) + "%");
-
+                .text(d3.select(this).attr("name") + " : " + (Math.round(1000 * d3.select(this).attr("rate")) / 1000) + "%");
+        Countries.append("text")
+                .attr("x", d3.mouse(this)[0])
+                .attr("y", 20 + d3.mouse(this)[1])
+                .attr("fill", "#015")
+                .text(d3.select(this).attr("cases") + " cases");
 
 //        window.open("country-profile/" + d3.select(this)
 //                .attr("link"));
