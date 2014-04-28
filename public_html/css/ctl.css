@@ -13,16 +13,22 @@
 .form-inline{
     text-align: center;
 }
+.no-boundry{
+    fill: none;
+    stroke: none;
+    stroke-linejoin: round;
+}
 .countries {
-  fill: none;
-  stroke: #222;
-  stroke-width: 0.3;
+    fill: none;
+    stroke: #222;
+    stroke-width: 0.3;
+    stroke-linejoin: round;
 }
 
 .states {
-  fill: none;
-  stroke: #222;
-  stroke-linejoin: round;
+    fill: none;
+    stroke: #222;
+    stroke-linejoin: round;
 }
 
 .q0-9 { fill:rgb(255,251,247); }
