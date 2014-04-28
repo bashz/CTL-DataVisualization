@@ -33,7 +33,7 @@ var sum = 0;
 
 function reload(Case) {
     svg.selectAll("g").remove();
-    Countries =svg.append("g").attr("id", "countries");
+    Countries = svg.append("g").attr("id", "countries");
     Labels = svg.append("g").attr("id", "labels");
     Legend = svg.append("g").attr("id", "legend");
     Legend_label = svg.append("g").attr("id", "legend-label");
@@ -108,16 +108,16 @@ function ready(error, us) {
     for (var i = 0; i < casesId.length; i++) {
         rateById.set(casesId[i], casesCount[i] / sum);
     }
-     var Country = Countries.attr("class", "countries")
+    var Country = Countries.attr("class", "countries")
             .selectAll("path")
             .data(us.features)
             .enter().append("path")
-            .attr("name", function(d){
-                return d.name;
-            })
-            .attr("rate", function(d){
-                return 100 * rateById.get(d.properties.abbr);
-            })
+            .attr("name", function(d) {
+        return d.properties.name;
+    })
+            .attr("rate", function(d) {
+        return 100 * rateById.get(d.properties.abbr);
+    })
             .attr("fill", function(d) {
         var rate = quantize(rateById.get(d.properties.abbr));
         return "rgb(" + rate + "," + Math.floor(6 * rate / 7) + "," + Math.floor(5 * rate / 7) + ")";
@@ -161,13 +161,13 @@ function ready(error, us) {
             .text(function(d) {
         return (d * 100) + "%";
     });
-    
+
     Country.on("mouseover", function() {
         d3.select(this)
                 .attr("_fill", function() {
             return d3.select(this).attr("fill");
         })
-                .attr("fill",  function() {
+                .attr("fill", function() {
             return "#edd"
         })
                 .attr("cursor", "pointer");
@@ -180,10 +180,18 @@ function ready(error, us) {
                 .attr("cursor", "pointer");
     });
     Country.on("click", function() {
-        window.open("country-profile/" + d3.select(this)
-                .attr("link"));
+        Countries.selectAll("text").remove();
+        Countries.append("text")
+                .attr("x", d3.mouse(this)[0])
+                .attr("y", d3.mouse(this)[1])
+                .attr("fill", "#400")
+                .text(d3.select(this).attr("name") + " : " + Math.round(10 * d3.select(this).attr("rate")) + "%");
+
+
+//        window.open("country-profile/" + d3.select(this)
+//                .attr("link"));
     });
-    
+
 }
 
 
