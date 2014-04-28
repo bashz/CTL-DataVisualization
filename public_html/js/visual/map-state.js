@@ -5,8 +5,8 @@ var rateById = d3.map();
 
 var quantize = d3.scale.quantize()
         .domain([0, .15])
-        .range(d3.range(9).map(function(i) {
-    return "q" + i + "-9";
+        .range(d3.range(255).map(function(i) {
+    return 255 - i;
 }));
 
 var projection = d3.geo.albersUsa()
@@ -17,10 +17,12 @@ var path = d3.geo.path()
         .projection(projection);
 
 var svg = d3.select("#map").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+        .attr("width", width)
+        .attr("height", height);
 var Countries;
 var Labels;
+var Legend;
+var Legend_label;
 var casesId = [];
 var casesCount = [];
 var sum = 0;
@@ -103,8 +105,9 @@ function ready(error, us) {
             .selectAll("path")
             .data(us.features)
             .enter().append("path")
-            .attr("class", function(d) {
-        return quantize(rateById.get(d.properties.abbr));
+            .attr("fill", function(d) {
+        var rate = quantize(rateById.get(d.properties.abbr));
+        return "rgb(" + rate + "," + Math.floor(6 * rate / 7) + "," + Math.floor(5 * rate / 7) + ")";
     })
             .attr("d", path);
     Labels = svg.append("g")
@@ -117,10 +120,36 @@ function ready(error, us) {
     })
             .attr("y", function(d) {
         return path.centroid(d)[1];
-    }).text(function(d) {
+    })
+            .text(function(d) {
         return d.properties.abbr;
     });
-
+    Legend = svg.append("g")
+            .selectAll("rect")
+            .data([0, .05, .1, .15])
+            .enter().append("rect")
+            .attr("x", 900)
+            .attr("y", function(d) {
+        return 300 + 400 * d;
+    })
+            .attr("height", 10)
+            .attr("width", 10)
+            .attr("fill", function(d) {
+        var rate = quantize(d);
+        return "rgb(" + rate + "," + Math.floor(6 * rate / 7) + "," + Math.floor(5 * rate / 7) + ")";
+    });
+    Legend_label = svg.append("g")
+            .attr("class", "labels")
+            .selectAll("text")
+            .data([0, .05, .1, .15])
+            .enter().append("text")
+            .attr("x", 920)
+            .attr("y", function(d) {
+        return 310 + 400 * d;
+    })
+            .text(function(d) {
+        return (d * 100)+"%";
+    });
 }
 
 d3.select(self.frameElement).style("height", height + "px");
