@@ -1,6 +1,13 @@
 .visual{
     
 }
+#map{
+    width: 960px;
+    margin: auto;
+}
+.form-inline{
+    text-align: center;
+}
 .countries {
   fill: none;
   stroke: #222;

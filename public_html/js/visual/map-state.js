@@ -15,10 +15,14 @@ var projection = d3.geo.albersUsa()
 
 var path = d3.geo.path()
         .projection(projection);
-
+function zoom() {
+    svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
 var svg = d3.select("#map").append("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .call(d3.behavior.zoom().scaleExtent([1, 64]).on("zoom", zoom))
+        .append("g");
 var Countries;
 var Labels;
 var Legend;
@@ -29,6 +33,10 @@ var sum = 0;
 
 function reload(Case) {
     svg.selectAll("g").remove();
+    Countries =svg.append("g").attr("id", "countries");
+    Labels = svg.append("g").attr("id", "labels");
+    Legend = svg.append("g").attr("id", "legend");
+    Legend_label = svg.append("g").attr("id", "legend-label");
     sum = 0;
     casesId = [];
     casesCount = [];
@@ -100,18 +108,22 @@ function ready(error, us) {
     for (var i = 0; i < casesId.length; i++) {
         rateById.set(casesId[i], casesCount[i] / sum);
     }
-    Countries = svg.append("g")
-            .attr("class", "countries")
+     var Country = Countries.attr("class", "countries")
             .selectAll("path")
             .data(us.features)
             .enter().append("path")
+            .attr("name", function(d){
+                return d.name;
+            })
+            .attr("rate", function(d){
+                return 100 * rateById.get(d.properties.abbr);
+            })
             .attr("fill", function(d) {
         var rate = quantize(rateById.get(d.properties.abbr));
         return "rgb(" + rate + "," + Math.floor(6 * rate / 7) + "," + Math.floor(5 * rate / 7) + ")";
     })
             .attr("d", path);
-    Labels = svg.append("g")
-            .attr("class", "labels")
+    Labels.attr("class", "labels")
             .selectAll("text")
             .data(us.features)
             .enter().append("text")
@@ -124,7 +136,7 @@ function ready(error, us) {
             .text(function(d) {
         return d.properties.abbr;
     });
-    Legend = svg.append("g")
+    Legend.attr("class", "legend")
             .selectAll("rect")
             .data([0, .05, .1, .15])
             .enter().append("rect")
@@ -138,8 +150,7 @@ function ready(error, us) {
         var rate = quantize(d);
         return "rgb(" + rate + "," + Math.floor(6 * rate / 7) + "," + Math.floor(5 * rate / 7) + ")";
     });
-    Legend_label = svg.append("g")
-            .attr("class", "labels")
+    Legend_label.attr("class", "labels")
             .selectAll("text")
             .data([0, .05, .1, .15])
             .enter().append("text")
@@ -148,8 +159,32 @@ function ready(error, us) {
         return 310 + 400 * d;
     })
             .text(function(d) {
-        return (d * 100)+"%";
+        return (d * 100) + "%";
     });
+    
+    Country.on("mouseover", function() {
+        d3.select(this)
+                .attr("_fill", function() {
+            return d3.select(this).attr("fill");
+        })
+                .attr("fill",  function() {
+            return "#edd"
+        })
+                .attr("cursor", "pointer");
+    });
+    Country.on("mouseout", function() {
+        d3.select(this)
+                .attr("fill", function() {
+            return d3.select(this).attr("_fill");
+        })
+                .attr("cursor", "pointer");
+    });
+    Country.on("click", function() {
+        window.open("country-profile/" + d3.select(this)
+                .attr("link"));
+    });
+    
 }
+
 
 d3.select(self.frameElement).style("height", height + "px");
