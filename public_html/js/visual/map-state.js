@@ -38,6 +38,7 @@ function reload(Case) {
     Labels = svg.append("g").attr("id", "labels");
     Legend = svg.append("g").attr("id", "legend");
     Legend_label = svg.append("g").attr("id", "legend-label");
+    Tooltip = svg.append("g").attr("id", "tooltip");
     sum = 0;
     casesId = [];
     casesCount = [];
@@ -120,18 +121,34 @@ function ready(error, us) {
             .attr("rate", function(d) {
         return 100 * rateById.get(d.properties.abbr);
     })
-            .attr("cases",function(d) {
+            .attr("cases", function(d) {
         return caseById.get(d.properties.abbr);
     })
             .attr("fill", function(d) {
         var rate = quantize(rateById.get(d.properties.abbr));
-        return "rgb(" + rate + "," + Math.floor(6 * rate / 7) + "," + Math.floor(5 * rate / 7) + ")";
+        return "rgb(" + rate + "," + rate + "," + rate + ")";
+    })
+            .attr("ttx", function(d) {
+        return path.centroid(d)[0];
+    })
+            .attr("tty", function(d) {
+        return path.centroid(d)[1];
     })
             .attr("d", path);
+    Tooltip.attr("class", "tooltip")
+            .append("rect")
+            .attr("x", 838)
+            .attr("y", 400)
+            .attr("height", 140)
+            .attr("width", 120)
+            .attr("stroke", "#277")
+            .attr("fill", "#ccc");
     Labels.attr("class", "labels")
             .selectAll("text")
             .data(us.features)
             .enter().append("text")
+            .attr("font-size", "12px")
+            .attr("opacity", "0.2")
             .attr("x", function(d) {
         return path.centroid(d)[0];
     })
@@ -151,9 +168,10 @@ function ready(error, us) {
     })
             .attr("height", 10)
             .attr("width", 10)
+            .attr("stroke", "#377")
             .attr("fill", function(d) {
         var rate = quantize(d);
-        return "rgb(" + rate + "," + Math.floor(6 * rate / 7) + "," + Math.floor(5 * rate / 7) + ")";
+        return "rgb(" + rate + "," + rate + "," + rate + ")";
     });
     Legend_label.attr("class", "labels")
             .selectAll("text")
@@ -166,16 +184,31 @@ function ready(error, us) {
             .text(function(d) {
         return (d * 100) + "%";
     });
-
+    var current = '';
     Country.on("mouseover", function() {
-        d3.select(this)
-                .attr("_fill", function() {
-            return d3.select(this).attr("fill");
-        })
-                .attr("fill", function() {
-            return "#edd"
-        })
-                .attr("cursor", "pointer");
+        if (d3.select(this) !== current) {
+            d3.select(this)
+                    .attr("_fill", function() {
+                return d3.select(this).attr("fill");
+            })
+                    .attr("fill", function() {
+                var rate = quantize(parseFloat(d3.select(this).attr("rate")) / 100);
+                return "rgb(" + (rate - 4) + "," + (rate + 7) + "," + (rate + 4) + ")";
+            })
+                    .attr("cursor", "pointer");
+            Countries.selectAll("text").remove();
+            Countries.append("text")
+                    .attr("x", (parseFloat(d3.select(this).attr("ttx"))-10))
+                    .attr("y", (parseFloat(d3.select(this).attr("tty"))))
+                    .attr("fill", "#722")
+                    .text((Math.round(100 * d3.select(this).attr("rate")) / 100) + "%");
+            Countries.append("text")
+                    .attr("x", (parseFloat(d3.select(this).attr("ttx"))-10))
+                    .attr("y", (parseFloat(d3.select(this).attr("tty")) + 20))
+                    .attr("fill", "#027")
+                    .text(d3.select(this).attr("cases") + " cases");
+            current = d3.select(this);
+        }
     });
     Country.on("mouseout", function() {
         d3.select(this)
@@ -185,16 +218,21 @@ function ready(error, us) {
                 .attr("cursor", "pointer");
     });
     Country.on("click", function() {
-        Countries.selectAll("text").remove();
-        Countries.append("text")
-                .attr("x", d3.mouse(this)[0])
-                .attr("y", d3.mouse(this)[1])
-                .attr("fill", "#400")
-                .text(d3.select(this).attr("name") + " : " + (Math.round(1000 * d3.select(this).attr("rate")) / 1000) + "%");
-        Countries.append("text")
-                .attr("x", d3.mouse(this)[0])
-                .attr("y", 20 + d3.mouse(this)[1])
-                .attr("fill", "#015")
+        Tooltip.selectAll("text").remove();
+        Tooltip.append("text")
+                .attr("x", 864)
+                .attr("y", 440)
+                .attr("fill", "#722")
+                .text(d3.select(this).attr("name"));
+        Tooltip.append("text")
+                .attr("x", 864)
+                .attr("y", 470)
+                .attr("fill", "#722")
+                .text((Math.round(100 * d3.select(this).attr("rate")) / 100) + "%");
+        Tooltip.append("text")
+                .attr("x", 864)
+                .attr("y", 500)
+                .attr("fill", "#027")
                 .text(d3.select(this).attr("cases") + " cases");
 
 //        window.open("country-profile/" + d3.select(this)
